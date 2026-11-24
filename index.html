@@ -464,3 +464,23 @@ var COURIERS = {
   dtdc:        {name:'DTDC',         url:'https://www.dtdc.in/'},
   ecomexpress: {name:'Ecom Express', url:'https://ecomexpress.in/'},
   xpressbees:  {name:'XpressBees',   url:'https://www.xpressbees.com/'},
+  indiapost:   {name:'India Post',   url:'https://www.indiapost.gov.in/'},
+  other:       {name:'Other courier',url:''}
+};
+var GUIDES = [
+  {t:'Where do I find my tracking ID?', b:'It is in the order confirmation SMS, email or app — usually labelled <b>Tracking ID</b>, <b>AWB</b> or <b>Order ID</b>. Paste it here exactly as shown; a single wrong digit is the most common reason a track page says “not found”.'},
+  {t:'My parcel is stuck — what do I do?', b:'<b>1.</b> Wait 48 hours past the expected date — festival and rain delays are routine. <b>2.</b> Paste the ID on the courier’s site and note the last scan city. <b>3.</b> Call the courier with the ID. <b>4.</b> If nothing moves in 3 days, raise it with the store — they can push the courier harder than you can.'},
+  {t:'How long do I have to return something?', b:'Most Indian stores give <b>7 days</b> from delivery; some give 10 or 14. The clock starts on the delivery day, not the order day. ParcelKit counts it down on every delivered card — check it before you throw the box away.'},
+  {t:'Cash on delivery — how do I stay safe?', b:'Pay only after the parcel is in your hand and the seal looks untouched. Never pay through a link in an SMS or a call — the delivery person’s machine or UPI ID is the only payment. If anyone asks for an OTP to “release” a parcel, it is a scam.'},
+  {t:'The box arrived damaged. Now what?', b:'Take a photo of the box <b>before</b> you open it, then of the item. If the damage is bad, refuse delivery on the spot — it goes back free. If you already accepted it, raise a return the same day with the photos attached; waiting weakens your case.'},
+  {t:'How do I make sure the delivery finds me?', b:'Keep your phone on and nearby on the expected day. In flats and PGs, add the flat number and a landmark to the address, and tell the guard or a neighbour to accept it if you are out. Missed deliveries usually get only two more attempts.'}
+];
+/* Seeds — hand-verified against today, Tue 24 Nov 2026.
+   In transit: p1..p5 (5). Arriving this week (by Sun 29 Nov): p1, p2, p3 (3).
+   Delivered this month: p6, p7 (2). Needs attention: p5, due 21 Nov (1).
+   Spent this month: 1299+899+349+1450+1799+4995+299 = 11090.
+   Next delivery: p1, 25 Nov = tomorrow (1 day). p6 return by 27 Nov (3 days left).
+   p7 return by 25 Nov (1 day left). */
+var SEED = [
+  {id:'p1', item:'boAt Airdopes 141', courier:'amazon', tid:'408-1234567-8901234', expected:'2026-11-25', price:1299, stage:3, ordered:'2026-11-21', returnDays:7, delivered:null, note:''},
+  {id:'p2', item:'White linen shirt', courier:'flipkart', tid:'OD123456789012', expected:'2026-11-27', price:899, stage:2, ordered:'2026-11-22', returnDays:7, delivered:null, note:'For the interview'},
