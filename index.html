@@ -151,3 +151,39 @@ section.block{margin-top:46px}
 .pcard .datecol b{font-family:'Fraunces',serif;font-size:26px;font-weight:900;display:block;line-height:1}
 .pcard .datecol span{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2)}
 .pcard .datecol .yr{font-size:11px;color:var(--ink3);font-weight:600}
+.pcard h3{font-size:19px;font-weight:700;line-height:1.25}
+.pcard h3 .price{float:right;font-family:'Fraunces',serif;font-size:19px;font-weight:900;color:var(--bronze)}
+.pcard .sub{color:var(--ink2);font-size:13.5px;margin-top:3px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.pcard .sub .tid{font-family:ui-monospace,Menlo,monospace;font-size:12.5px;background:var(--paper2);border-radius:6px;padding:2px 7px}
+.linkbtn{border:none;background:none;color:var(--bronze);font-weight:700;font-size:13px;padding:0;text-decoration:underline;text-underline-offset:2px}
+.iconbtn{border:1.5px solid var(--line2);background:var(--card);border-radius:9px;width:30px;height:30px;display:inline-grid;place-items:center;vertical-align:middle}
+.iconbtn svg{width:15px;height:15px}
+.iconbtn:hover{border-color:var(--bronze)}
+/* pipeline */
+.pipe{margin-top:14px}
+.pipe .track{height:8px;border-radius:99px;background:var(--paper2);overflow:hidden}
+.pipe .track i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--amber),var(--bronze));transition:width .5s ease}
+.pipe .track i.done{background:linear-gradient(90deg,#6d9a74,var(--sage))}
+.pipe .stages{display:flex;justify-content:space-between;margin-top:7px}
+.pipe .stages span{font-size:11.5px;font-weight:700;color:var(--ink3);display:flex;align-items:center;gap:4px}
+.pipe .stages span.on{color:var(--ink)}
+.pipe .stages span.on::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--bronze)}
+.pipe .stages span.done{color:var(--sage)}
+.pipe .stages span.done::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--sage)}
+.pcard .foot{margin-top:13px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.pcard .foot .spacer{flex:1}
+.pill{font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:5px 11px;border-radius:99px}
+.pill.amber{background:var(--amberbg);color:#7a5510}
+.pill.red{background:var(--redbg);color:var(--red)}
+.pill.green{background:var(--sagebg);color:#33573d}
+.pill.grey{background:var(--paper2);color:var(--ink2)}
+.return-note{font-size:13px;color:var(--ink2)}
+.return-note b{color:var(--terra)}
+.empty{background:var(--card);border:1.5px dashed var(--line2);border-radius:20px;padding:34px 22px;text-align:center;color:var(--ink2)}
+.empty h3{font-size:19px;color:var(--ink);margin-bottom:4px}
+
+/* ---------- flat-lay band ---------- */
+.band{margin-top:48px;border-radius:24px;overflow:hidden;position:relative;min-height:250px;display:flex;align-items:flex-end}
+.band img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;animation:kenburns 30s ease-in-out infinite alternate}
+.band .shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(36,23,8,.72),rgba(36,23,8,.28))}
+.band .txt{position:relative;padding:30px 32px;color:#f8f2e7;max-width:560px}
