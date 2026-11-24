@@ -606,3 +606,48 @@ function renderAttn(){
   box.innerHTML = '<div class="attn"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#b3402a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg></div>' +
     '<div><h3>' + attn.length + (attn.length===1?' parcel needs':' parcels need') + ' attention</h3>' +
     '<p><b>' + esc(p.item) + '</b> was due ' + fmtDate(p.expected) + ' and still shows “' + esc(STAGES[p.stage]) + '”. Give the courier a call with the tracking ID.' + esc(more) + '</p></div>' +
+    '<button class="btn btn-dark btn-sm" type="button" data-act="filter-attention">Show them</button></div>';
+}
+
+function pipeHTML(p){
+  var pct = (p.stage / 4) * 100;
+  var stages = STAGES.map(function(s, i){
+    var cls = i < p.stage ? 'done' : (i === p.stage ? 'on' : '');
+    return '<span class="' + cls + '">' + s + '</span>';
+  }).join('');
+  return '<div class="pipe"><div class="track"><i class="' + (isDelivered(p)?'done':'') + '" style="width:' + pct + '%"></i></div><div class="stages">' + stages + '</div></div>';
+}
+
+function cardHTML(p){
+  var c = COURIERS[p.courier] || COURIERS.other;
+  var d = daysUntil(p.expected);
+  var short = fmtShort(p.expected);
+  var attn = isAttention(p);
+  var del = isDelivered(p);
+  var pill = del ? '<span class="pill green">Delivered</span>'
+    : attn ? '<span class="pill red">Needs attention · ' + Math.abs(d) + 'd late</span>'
+    : d === 0 ? '<span class="pill amber">Arriving today</span>'
+    : d === 1 ? '<span class="pill amber">Arriving tomorrow</span>'
+    : '<span class="pill amber">In ' + d + ' days</span>';
+  var ret = '';
+  if(del){
+    var rl = returnLeft(p);
+    if(p.returnDays > 0){
+      ret = rl === null ? '' : rl < 0
+        ? '<span class="return-note">Return window closed on ' + fmtDate(returnBy(p)) + '.</span>'
+        : rl === 0 ? '<span class="return-note"><b>Return window ends today</b> (' + fmtDate(returnBy(p)) + ').</span>'
+        : '<span class="return-note">Return window: <b>' + rl + ' day' + (rl===1?'':'s') + ' left</b> (till ' + fmtDate(returnBy(p)) + ').</span>';
+    } else {
+      ret = '<span class="return-note">No returns on this one.</span>';
+    }
+  }
+  var track = c.url ? '<a class="linkbtn" href="' + c.url + '" target="_blank" rel="noopener">Track on ' + esc(c.name) + ' ↗</a>' : '';
+  var actions = del
+    ? '<button class="btn btn-ghost btn-sm" type="button" data-act="delete" data-id="' + p.id + '">Remove</button>'
+    : '<button class="btn btn-gold btn-sm" type="button" data-act="advance" data-id="' + p.id + '">' + (p.stage === 3 ? 'Mark delivered' : 'Move one step') + '</button>' +
+      '<button class="btn btn-ghost btn-sm" type="button" data-act="delete" data-id="' + p.id + '">Remove</button>';
+  var note = p.note ? '<div class="small muted" style="margin-top:8px">Note: ' + esc(p.note) + '</div>' : '';
+  return '<article class="pcard' + (attn?' overdue':'') + (del?' delivered':'') + '" data-id="' + p.id + '">' +
+    '<div class="datecol"><div class="dot"></div><b>' + short.d + '</b><span>' + short.m + '</span><div class="yr">' + short.y + '</div></div>' +
+    '<div><h3>' + esc(p.item) + '<span class="price">' + inr(p.price) + '</span></h3>' +
+    '<div class="sub"><span class="chip">' + esc(c.name) + '</span><span class="tid">' + esc(p.tid) + '</span>' +
