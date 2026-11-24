@@ -117,3 +117,37 @@ nav.main a:hover{background:var(--paper2);color:var(--ink)}
 .stat.good b{color:var(--sage)}
 
 /* ---------- attention banner ---------- */
+.attn{margin-top:18px;background:var(--redbg);border:1px solid #eec5b8;border-radius:var(--r);padding:16px 20px;display:flex;gap:14px;align-items:flex-start}
+.attn .ico{flex:none;width:38px;height:38px;border-radius:12px;background:#fff;display:grid;place-items:center}
+.attn .ico svg{width:20px;height:20px}
+.attn h3{font-size:17px}
+.attn p{font-size:14px;color:#6d2f22;margin-top:2px}
+.attn .btn{margin-left:auto;flex:none}
+
+/* ---------- section heads / filters ---------- */
+section.block{margin-top:46px}
+.sec-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:6px}
+.sec-head h2{font-size:30px;font-weight:900}
+.sec-head .count{font-size:13px;font-weight:700;color:var(--ink2);background:var(--paper2);border:1px solid var(--line);padding:3px 10px;border-radius:99px}
+.sec-head p{width:100%;color:var(--ink2);font-size:15px;margin-top:2px}
+.filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:16px}
+.fchip{border:1.5px solid var(--line2);background:var(--card);border-radius:99px;padding:8px 15px;font-size:13.5px;font-weight:700;color:var(--ink2)}
+.fchip.on{background:var(--ink);border-color:var(--ink);color:#f8f2e7}
+.fchip .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--terra);margin-left:5px;vertical-align:1px}
+.search{margin-left:auto;display:flex;align-items:center;gap:8px;background:var(--card);border:1.5px solid var(--line2);border-radius:99px;padding:8px 14px;min-width:210px}
+.search input{border:none;outline:none;background:transparent;flex:1;font-size:14px;color:var(--ink)}
+.search svg{width:16px;height:16px;flex:none}
+
+/* ---------- parcel timeline wall ---------- */
+.wall{margin-top:18px;display:flex;flex-direction:column;gap:14px;position:relative}
+.wall::before{content:"";position:absolute;left:31px;top:8px;bottom:8px;width:2px;background:repeating-linear-gradient(180deg,var(--line2) 0 8px,transparent 8px 16px)}
+.pcard{background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow2);padding:18px 20px 16px;display:grid;grid-template-columns:64px 1fr;gap:16px;position:relative}
+.pcard.overdue{border-color:#e5b3a4;box-shadow:0 10px 26px rgba(179,64,42,.12)}
+.pcard.delivered{opacity:.96}
+.pcard .datecol{position:relative;text-align:center;padding-top:2px}
+.pcard .datecol .dot{width:16px;height:16px;border-radius:50%;background:var(--amber);border:3px solid var(--paper);box-shadow:0 0 0 2px var(--line2);margin:2px auto 6px}
+.pcard.overdue .datecol .dot{background:var(--red)}
+.pcard.delivered .datecol .dot{background:var(--sage)}
+.pcard .datecol b{font-family:'Fraunces',serif;font-size:26px;font-weight:900;display:block;line-height:1}
+.pcard .datecol span{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2)}
+.pcard .datecol .yr{font-size:11px;color:var(--ink3);font-weight:600}
