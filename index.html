@@ -828,3 +828,63 @@ el('q').addEventListener('input', function(ev){ query = ev.target.value.trim(); 
 
 function buildSummary(){
   var open = state.parcels.filter(function(p){ return !isDelivered(p); })
+    .sort(function(a,b){ return dayNum(a.expected) - dayNum(b.expected); });
+  var done = state.parcels.filter(isDelivered);
+  var lines = ['My parcels — ParcelKit, ' + fmtDate(todayStr()), ''];
+  if(open.length){
+    lines.push('ON ITS WAY (' + open.length + '):');
+    open.forEach(function(p){
+      var d = daysUntil(p.expected);
+      var when = d < 0 ? Math.abs(d) + 'd LATE' : d === 0 ? 'today' : d === 1 ? 'tomorrow' : 'in ' + d + 'd';
+      lines.push('• ' + p.item + ' — ' + (COURIERS[p.courier]||COURIERS.other).name + ' ' + p.tid + ' — due ' + fmtDate(p.expected) + ' (' + when + ') — ' + inr(p.price));
+    });
+    lines.push('');
+  } else { lines.push('Nothing on its way right now.', ''); }
+  if(done.length){
+    lines.push('DELIVERED (' + done.length + '):');
+    done.forEach(function(p){
+      var rl = returnLeft(p);
+      var r = p.returnDays > 0 ? (rl === null ? '' : rl < 0 ? ' — return closed' : ' — return ' + rl + 'd left') : ' — no returns';
+      lines.push('• ' + p.item + ' — delivered ' + fmtDate(p.delivered) + r);
+    });
+  }
+  return lines.join('\n');
+}
+
+/* ================= coach ================= */
+var COACH_STEPS = [
+  {t:'Your parcels, at a glance', x:'The card at the top shows what lands next and in how many days. Below it, every parcel still on its way, soonest first.'},
+  {t:'Tap a card to move it along', x:'Ordered, Packed, Shipped, Out for delivery, Delivered — tap “Move one step” as the courier updates, or “Mark delivered” when it lands. The return clock starts on delivery day.'},
+  {t:'Add a parcel in thirty seconds', x:'Item, courier, tracking ID and the promised date — that’s all it takes. The ID copies with one tap, and “Track” opens the courier’s own site.'}
+];
+var coachIdx = 0;
+function coachStep(i){
+  if(i >= COACH_STEPS.length){ closeCoach(); return; }
+  coachIdx = i;
+  el('coachTag').textContent = 'Step ' + (i+1) + ' of 3';
+  el('coachTitle').textContent = COACH_STEPS[i].t;
+  el('coachText').textContent = COACH_STEPS[i].x;
+  var dots = el('coachDots').children;
+  for(var j = 0; j < dots.length; j++){ dots[j].classList.toggle('on', j === i); }
+}
+function closeCoach(){
+  el('coach').classList.remove('show');
+  try{ localStorage.setItem(LS_COACH, '1'); }catch(e){}
+}
+function maybeCoach(){
+  try{ if(localStorage.getItem(LS_COACH)) return; }catch(e){ return; }
+  setTimeout(function(){ coachStep(0); el('coach').classList.add('show'); }, 4600);
+}
+
+/* ================= intro + boot ================= */
+(function(){
+  var intro = el('intro');
+  var seen = false;
+  try{ seen = !!localStorage.getItem(LS_SEEN); }catch(e){}
+  var ms = seen ? 1200 : 4000;
+  function hide(){
+    if(!intro || intro.classList.contains('hide')) return;
+    intro.classList.add('hide');
+    try{ localStorage.setItem(LS_SEEN, '1'); }catch(e){}
+  }
+  intro.addEventListener('click', hide);
