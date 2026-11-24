@@ -769,3 +769,62 @@ document.addEventListener('click', function(ev){
     if(p2 && p2.id && p2.item) toast('Removed “' + p2.item + '”');
     render();
   }
+  else if(act === 'filter-attention'){
+    filter = 'attention';
+    document.querySelectorAll('.fchip').forEach(function(ch){ ch.classList.toggle('on', ch.getAttribute('data-filter') === 'attention'); });
+    renderLists(); scrollToEl(el('arriving'));
+  }
+  else if(act === 'clear-form'){ el('addForm').reset(); el('formMsg').textContent = ''; }
+  else if(act === 'copy-summary'){ copyText(buildSummary(), 'Summary copied'); }
+  else if(act === 'remove-samples'){
+    if(!state.samples){ toast('Samples are already gone'); return; }
+    state.parcels = state.parcels.filter(function(p){ return !SEED.some(function(s){ return s.id === p.id; }); });
+    state.samples = false;
+    render(); toast('Samples removed — your parcels stay');
+  }
+  else if(act === 'erase-all'){
+    if(t.dataset.armed){ try{ localStorage.removeItem(LS_KEY); }catch(e){} state = {parcels:[], samples:false}; render(); toast('Everything erased'); t.dataset.armed = ''; t.textContent = 'Erase everything'; }
+    else { t.dataset.armed = '1'; t.textContent = 'Tap again to confirm erase'; setTimeout(function(){ t.dataset.armed = ''; t.textContent = 'Erase everything'; }, 4000); }
+  }
+  else if(act === 'coach-next'){ coachStep(coachIdx + 1); }
+  else if(act === 'coach-skip'){ closeCoach(); }
+});
+
+/* search */
+el('q').addEventListener('input', function(ev){ query = ev.target.value.trim(); renderLists(); });
+
+/* add form */
+(function(){
+  var sel = el('fCourier');
+  Object.keys(COURIERS).forEach(function(k){
+    var o = document.createElement('option');
+    o.value = k; o.textContent = COURIERS[k].name;
+    sel.appendChild(o);
+  });
+  el('fExpected').value = addDays(todayStr(), 3);
+  el('addForm').addEventListener('submit', function(ev){
+    ev.preventDefault();
+    var item = el('fItem').value.trim();
+    var tid = el('fTid').value.trim();
+    var exp = el('fExpected').value;
+    var msg = el('formMsg');
+    if(!item || !tid || !exp){ msg.textContent = 'Item, tracking ID and expected date are needed.'; return; }
+    if(dayNum(exp) < dayNum(todayStr()) - 60){ msg.textContent = 'That expected date looks too far in the past — check it.'; return; }
+    state.parcels.push({
+      id: uid(), item: item, courier: sel.value, tid: tid, expected: exp,
+      price: Number(el('fPrice').value) || 0, stage: 0, ordered: todayStr(),
+      returnDays: Number(el('fReturn').value), delivered: null, note: el('fNote').value.trim()
+    });
+    el('addForm').reset();
+    el('fExpected').value = addDays(todayStr(), 3);
+    msg.textContent = '';
+    filter = 'all';
+    document.querySelectorAll('.fchip').forEach(function(ch){ ch.classList.toggle('on', ch.getAttribute('data-filter') === 'all'); });
+    render();
+    scrollToEl(el('arriving'));
+    toast('Parcel added — we’ll count the days');
+  });
+})();
+
+function buildSummary(){
+  var open = state.parcels.filter(function(p){ return !isDelivered(p); })
