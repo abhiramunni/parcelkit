@@ -651,3 +651,55 @@ function cardHTML(p){
     '<div class="datecol"><div class="dot"></div><b>' + short.d + '</b><span>' + short.m + '</span><div class="yr">' + short.y + '</div></div>' +
     '<div><h3>' + esc(p.item) + '<span class="price">' + inr(p.price) + '</span></h3>' +
     '<div class="sub"><span class="chip">' + esc(c.name) + '</span><span class="tid">' + esc(p.tid) + '</span>' +
+    '<button class="iconbtn" type="button" data-act="copy" data-tid="' + esc(p.tid) + '" title="Copy tracking ID" aria-label="Copy tracking ID"><svg viewBox="0 0 24 24" fill="none" stroke="#6d573d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button>' +
+    track + '<span>Ordered ' + fmtDate(p.ordered) + '</span></div>' +
+    pipeHTML(p) + note +
+    '<div class="foot">' + pill + ret + '<span class="spacer"></span>' + actions + '</div></div></article>';
+}
+
+function matches(p){
+  if(query){
+    var q = query.toLowerCase();
+    var c = COURIERS[p.courier] || COURIERS.other;
+    var hay = (p.item + ' ' + c.name + ' ' + p.tid + ' ' + (p.note||'')).toLowerCase();
+    if(hay.indexOf(q) === -1) return false;
+  }
+  if(filter === 'transit') return !isDelivered(p);
+  if(filter === 'ofd') return isOFD(p);
+  if(filter === 'attention') return isAttention(p);
+  if(filter === 'delivered') return isDelivered(p);
+  return true;
+}
+
+function renderLists(){
+  var open = state.parcels.filter(function(p){ return !isDelivered(p); })
+    .sort(function(a,b){ return dayNum(a.expected) - dayNum(b.expected); });
+  var done = state.parcels.filter(isDelivered)
+    .sort(function(a,b){ return dayNum(b.delivered) - dayNum(a.delivered); });
+  var showOpen = open.filter(matches);
+  var showDone = done.filter(matches);
+  el('arrivingCount').textContent = open.length + (open.length === 1 ? ' parcel' : ' parcels');
+  el('deliveredCount').textContent = done.length + (done.length === 1 ? ' parcel' : ' parcels');
+  var list = el('parcelList');
+  if(filter === 'delivered'){
+    list.innerHTML = '<div class="empty"><h3>Delivered parcels live below</h3><p>Switch the filter to “All” or “In transit” to see what’s still on its way.</p></div>';
+  } else if(!showOpen.length){
+    list.innerHTML = '<div class="empty"><h3>Nothing matches that filter</h3><p>Try a different filter, or add a parcel — it takes thirty seconds.</p></div>';
+  } else {
+    list.innerHTML = showOpen.map(cardHTML).join('');
+  }
+  var dlist = el('deliveredList');
+  if(filter !== 'all' && filter !== 'delivered'){
+    dlist.innerHTML = '<div class="empty"><h3>Delivered parcels are hidden by this filter</h3><p>Switch to “All” or “Delivered” to see them.</p></div>';
+  } else if(!showDone.length){
+    dlist.innerHTML = '<div class="empty"><h3>No delivered parcels yet</h3><p>When something lands, use “Mark delivered” on its card and it will appear here with its return countdown.</p></div>';
+  } else {
+    dlist.innerHTML = showDone.map(cardHTML).join('');
+  }
+}
+
+function renderGuides(){
+  var box = el('guidesList');
+  if(box.dataset.done) return;
+  box.dataset.done = '1';
+  box.innerHTML = GUIDES.map(function(g, i){
