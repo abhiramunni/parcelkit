@@ -400,3 +400,67 @@ footer.site .fine{margin-top:26px;padding-top:16px;border-top:1px solid var(--li
       <div class="row-end">
         <button class="btn btn-gold" type="submit">Add parcel</button>
         <button class="btn btn-ghost" type="button" data-act="clear-form">Clear</button>
+        <span class="small muted" id="formMsg" role="status"></span>
+      </div>
+    </form>
+  </section>
+
+  <!-- guides -->
+  <section class="block" id="guides">
+    <div class="sec-head">
+      <h2>Good to know</h2>
+      <p>Plain-language answers to the six delivery questions everyone asks sooner or later.</p>
+    </div>
+    <div class="guides" id="guidesList"></div>
+  </section>
+</div><!-- /wrap -->
+
+<footer class="site">
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <h3>ParcelKit</h3>
+        <p>Track every delivery in one place. Your parcels never leave this device — there is no account, no server and no sync. Tracking links open the courier’s own site, where you paste the ID.</p>
+      </div>
+      <div class="tools">
+        <button class="btn btn-ghost btn-sm" type="button" data-act="copy-summary">Copy my summary</button>
+        <button class="btn btn-ghost btn-sm" type="button" data-act="remove-samples">Remove samples</button>
+        <button class="btn btn-ghost btn-sm" type="button" data-act="erase-all">Erase everything</button>
+      </div>
+    </div>
+    <div class="fine">
+      <span>ParcelKit is a personal tracker, not a courier. Live status lives on the courier’s site.</span>
+      <span>Expected dates are the store’s promise, not a guarantee.</span>
+      <span>Made for one household, on one device.</span>
+    </div>
+  </div>
+</footer>
+
+<!-- onboarding coach -->
+<div id="coach" role="dialog" aria-modal="true" aria-labelledby="coachTitle">
+  <div class="sheet">
+    <div class="step-tag" id="coachTag">Step 1 of 3</div>
+    <h3 id="coachTitle">Your parcels, at a glance</h3>
+    <p id="coachText">The card at the top shows what lands next and in how many days. Below it, every parcel still on its way, soonest first.</p>
+    <div class="dots" id="coachDots"><i class="on"></i><i></i><i></i></div>
+    <div class="row">
+      <button class="btn btn-ghost btn-sm" type="button" data-act="coach-skip">Skip tour</button>
+      <button class="btn btn-dark btn-sm" type="button" data-act="coach-next">Next</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+'use strict';
+/* ================= data ================= */
+var STAGES = ['Ordered','Packed','Shipped','Out for delivery','Delivered'];
+var COURIERS = {
+  amazon:      {name:'Amazon',       url:'https://www.amazon.in/your-orders'},
+  flipkart:    {name:'Flipkart',     url:'https://www.flipkart.com/account/orders'},
+  delhivery:   {name:'Delhivery',    url:'https://www.delhivery.com/'},
+  bluedart:    {name:'Blue Dart',    url:'https://www.bluedart.com/'},
+  dtdc:        {name:'DTDC',         url:'https://www.dtdc.in/'},
+  ecomexpress: {name:'Ecom Express', url:'https://ecomexpress.in/'},
+  xpressbees:  {name:'XpressBees',   url:'https://www.xpressbees.com/'},
