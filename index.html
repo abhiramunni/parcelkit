@@ -225,3 +225,58 @@ footer.site .fine{margin-top:26px;padding-top:16px;border-top:1px solid var(--li
 #coach{position:fixed;inset:0;z-index:150;background:rgba(36,23,8,.55);backdrop-filter:blur(3px);display:none;align-items:flex-end;justify-content:center;padding:20px}
 #coach.show{display:flex}
 #coach .sheet{background:var(--card);border-radius:22px;max-width:460px;width:100%;padding:26px;box-shadow:var(--shadow)}
+#coach .step-tag{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--terra)}
+#coach h3{font-size:24px;font-weight:900;margin-top:6px}
+#coach p{color:var(--ink2);margin-top:8px;font-size:15px}
+#coach .dots{display:flex;gap:6px;margin-top:18px}
+#coach .dots i{width:26px;height:5px;border-radius:99px;background:var(--line2)}
+#coach .dots i.on{background:var(--bronze)}
+#coach .row{display:flex;gap:10px;margin-top:18px;justify-content:flex-end}
+#toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,80px);z-index:180;background:var(--ink);color:#f8f2e7;border-radius:99px;padding:12px 20px;font-size:14px;font-weight:600;box-shadow:var(--shadow);opacity:0;transition:all .35s ease;pointer-events:none;max-width:90vw;text-align:center}
+#toast.show{transform:translate(-50%,0);opacity:1}
+
+@media (max-width:760px){
+  nav.main{display:none}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .stats .stat:last-child{grid-column:1/-1}
+  .hero .wrap{padding:54px 20px 140px}
+  .pcard{grid-template-columns:1fr;padding:16px}
+  .pcard .datecol{display:flex;gap:10px;align-items:baseline;text-align:left}
+  .pcard .datecol .dot{display:none}
+  .pcard .datecol b{font-size:20px}
+  .wall::before{display:none}
+  .grid2{grid-template-columns:1fr}
+  .guides{grid-template-columns:1fr}
+  .search{margin-left:0;width:100%}
+  .pcard h3 .price{float:none;display:block;margin-top:2px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms !important;transition-duration:.01ms !important}
+}
+
+</style>
+</head>
+<body>
+
+<!-- cinematic intro -->
+<div id="intro" role="button" aria-label="Skip intro" title="Tap to skip">
+  <div class="boxmark" aria-hidden="true">
+    <svg viewBox="0 0 96 96" fill="none"><rect x="10" y="26" width="76" height="52" rx="6" fill="#d9a441"/><path d="M10 32h76M48 26v52" stroke="#241708" stroke-width="3"/><path d="M38 26h20v10H38z" fill="#241708"/><path d="M14 62l10-8M82 62l-10-8" stroke="#f8f2e7" stroke-width="2.5" stroke-linecap="round"/></svg>
+  </div>
+  <h1 aria-label="ParcelKit"><span>P</span><span>a</span><span>r</span><span>c</span><span>e</span><span>l</span><span>K</span><span>i</span><span>t</span></h1>
+  <p>Every parcel. One place. No more guessing.</p>
+  <div class="bar"><i></i></div>
+  <div class="skip">Tap anywhere to skip</div>
+</div>
+
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="#top">
+      <span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><rect x="2.5" y="7" width="19" height="13" rx="2" fill="#d9a441"/><path d="M2.5 9.5h19M12 7v13" stroke="#241708" stroke-width="1.6"/><path d="M9 7h6v3H9z" fill="#241708"/></svg></span>
+      <b>Parcel<i>Kit</i></b>
+    </a>
+    <nav class="main" aria-label="Sections">
+      <a href="#arriving">Arriving</a>
+      <a href="#delivered">Delivered</a>
+      <a href="#guides">Guides</a>
+    </nav>
