@@ -888,3 +888,13 @@ function maybeCoach(){
     try{ localStorage.setItem(LS_SEEN, '1'); }catch(e){}
   }
   intro.addEventListener('click', hide);
+  setTimeout(hide, ms);
+  // safety: never trap the user behind the intro
+  setTimeout(hide, 6000);
+})();
+
+render();
+maybeCoach();
+</script>
+</body>
+</html>
