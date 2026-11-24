@@ -484,3 +484,44 @@ var GUIDES = [
 var SEED = [
   {id:'p1', item:'boAt Airdopes 141', courier:'amazon', tid:'408-1234567-8901234', expected:'2026-11-25', price:1299, stage:3, ordered:'2026-11-21', returnDays:7, delivered:null, note:''},
   {id:'p2', item:'White linen shirt', courier:'flipkart', tid:'OD123456789012', expected:'2026-11-27', price:899, stage:2, ordered:'2026-11-22', returnDays:7, delivered:null, note:'For the interview'},
+  {id:'p3', item:'Phone case — clear, OnePlus Nord', courier:'delhivery', tid:'1234567890123', expected:'2026-11-29', price:349, stage:1, ordered:'2026-11-23', returnDays:10, delivered:null, note:''},
+  {id:'p4', item:'College textbooks (2)', courier:'indiapost', tid:'EE123456789IN', expected:'2026-12-02', price:1450, stage:2, ordered:'2026-11-20', returnDays:14, delivered:null, note:'Semester books'},
+  {id:'p5', item:'Bluetooth speaker', courier:'xpressbees', tid:'XB9876543210', expected:'2026-11-21', price:1799, stage:2, ordered:'2026-11-17', returnDays:7, delivered:null, note:'Was due 3 days ago'},
+  {id:'p6', item:'Nike Air Monarch', courier:'amazon', tid:'408-7654321-1234567', expected:'2026-11-20', price:4995, stage:4, ordered:'2026-11-14', returnDays:7, delivered:'2026-11-20', note:''},
+  {id:'p7', item:'USB-C cable, 1 m', courier:'amazon', tid:'408-1122334-5566778', expected:'2026-11-18', price:299, stage:4, ordered:'2026-11-15', returnDays:7, delivered:'2026-11-18', note:''}
+];
+var LS_KEY = 'parcelkit_v1';
+var LS_SEEN = 'parcelkit_seen';
+var LS_COACH = 'parcelkit_coach';
+
+/* ================= state ================= */
+var state = load();
+var filter = 'all';
+var query = '';
+
+function load(){
+  try{
+    var raw = localStorage.getItem(LS_KEY);
+    if(raw){ var s = JSON.parse(raw); if(s && Array.isArray(s.parcels)) return s; }
+  }catch(e){}
+  return {parcels: JSON.parse(JSON.stringify(SEED)), samples:true};
+}
+function save(){
+  try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }catch(e){}
+}
+function uid(){ return 'p' + Date.now().toString(36) + Math.floor(Math.random()*1296).toString(36); }
+
+/* ================= dates ================= */
+function parseD(s){ var a = s.split('-'); return {y:+a[0], m:+a[1], d:+a[2]}; }
+function dayNum(s){ var p = parseD(s); return Date.UTC(p.y, p.m-1, p.d) / 86400000; }
+function todayStr(){ var n = new Date(); return n.getFullYear() + '-' + String(n.getMonth()+1).padStart(2,'0') + '-' + String(n.getDate()).padStart(2,'0'); }
+function daysUntil(s){ return Math.round(dayNum(s) - dayNum(todayStr())); }
+function fmtDate(s){
+  var p = parseD(s);
+  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return p.d + ' ' + months[p.m-1] + ' ' + p.y;
+}
+function fmtShort(s){ var p = parseD(s); var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']; return {d:p.d, m:months[p.m-1], y:p.y}; }
+function addDays(s, n){ var p = parseD(s); var d = new Date(Date.UTC(p.y, p.m-1, p.d) + n*86400000); return d.getUTCFullYear() + '-' + String(d.getUTCMonth()+1).padStart(2,'0') + '-' + String(d.getUTCDate()).padStart(2,'0'); }
+function inr(n){ return '₹' + Number(n||0).toLocaleString('en-IN'); }
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
