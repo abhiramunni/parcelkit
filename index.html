@@ -280,3 +280,62 @@ footer.site .fine{margin-top:26px;padding-top:16px;border-top:1px solid var(--li
       <a href="#delivered">Delivered</a>
       <a href="#guides">Guides</a>
     </nav>
+    <button class="btn btn-dark btn-sm" data-act="scroll-add" type="button">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+      Add parcel
+    </button>
+  </div>
+</header>
+
+<div id="top" class="hero">
+  <div class="photo"><img src="parcelkit-hero.webp" alt="Stack of cardboard delivery parcels in warm evening light on a doorstep" loading="eager"></div>
+  <div class="shade"></div>
+  <div class="wrap">
+    <span class="kicker">Your deliveries, finally in one place</span>
+    <h1>Every parcel.<br>One place. <em>No more “where is my order?”</em></h1>
+    <p class="lede">ParcelKit keeps every order you are waiting for — its courier, tracking ID, expected day and return window — right here on your device. Nothing leaves this phone or laptop.</p>
+    <div class="cta-row">
+      <button class="btn btn-gold" data-act="scroll-add" type="button">Add a parcel</button>
+      <a class="btn btn-ghost" href="#arriving">See what’s arriving</a>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <!-- next delivery -->
+  <div class="nextcard" id="nextCard"></div>
+
+  <!-- stats -->
+  <div class="stats" id="statsRow" role="status" aria-label="Delivery summary"></div>
+
+  <!-- attention -->
+  <div id="attnBox"></div>
+
+  <!-- arriving -->
+  <section class="block" id="arriving">
+    <div class="sec-head">
+      <h2>Arriving</h2><span class="count" id="arrivingCount"></span>
+      <p>Everything still on its way, soonest first. Tap a tracking ID to copy it, or open the courier’s site to check the live status.</p>
+    </div>
+    <div class="filters" role="group" aria-label="Filter parcels">
+      <button class="fchip on" type="button" data-filter="all">All</button>
+      <button class="fchip" type="button" data-filter="transit">In transit</button>
+      <button class="fchip" type="button" data-filter="ofd">Out for delivery</button>
+      <button class="fchip" type="button" data-filter="attention">Needs attention</button>
+      <button class="fchip" type="button" data-filter="delivered">Delivered</button>
+      <label class="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#9a8468" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+        <input id="q" type="search" placeholder="Search item, courier or ID…” aria-label="Search parcels">
+      </label>
+    </div>
+    <div class="wall" id="parcelList"></div>
+  </section>
+
+  <!-- delivered -->
+  <section class="block" id="delivered">
+    <div class="sec-head">
+      <h2>Delivered</h2><span class="count" id="deliveredCount"></span>
+      <p>Already home. The return clock runs from the delivery day — ParcelKit counts it down so a return window never slips past.</p>
+    </div>
+    <div class="wall" id="deliveredList"></div>
+  </section>
