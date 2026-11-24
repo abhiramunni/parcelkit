@@ -572,3 +572,37 @@ function renderNext(){
     : d === 0 ? 'arriving today' : d === 1 ? 'arriving tomorrow' : 'arriving in ' + d + ' days';
   var c = COURIERS[p.courier] || COURIERS.other;
   box.innerHTML = '<div class="card">' + ringSVG(d, 'days') +
+    '<div class="body"><div class="eyebrow">Next delivery · ' + esc(when) + '</div>' +
+    '<h2>' + esc(p.item) + '</h2>' +
+    '<p class="meta"><span class="chip">' + esc(c.name) + '</span><span class="tid" style="font-family:ui-monospace,Menlo,monospace;font-size:12.5px;background:var(--paper2);border-radius:6px;padding:2px 7px">' + esc(p.tid) + '</span><span>' + esc(STAGES[p.stage]) + ' · due ' + fmtDate(p.expected) + '</span></p></div>' +
+    '<div class="actions">' + (c.url ? '<a class="btn btn-dark btn-sm" href="' + c.url + '" target="_blank" rel="noopener">Track on ' + esc(c.name) + '</a>' : '') +
+    '<button class="btn btn-ghost btn-sm" type="button" data-act="copy" data-tid="' + esc(p.tid) + '">Copy ID</button></div></div>';
+}
+
+function renderStats(){
+  var tm = thisMonth();
+  var transit = state.parcels.filter(function(p){ return !isDelivered(p); });
+  var weekEnd = addDays(todayStr(), 7 - ((new Date().getDay()+6)%7) - 1); // coming Sunday
+  var thisWeek = transit.filter(function(p){ return daysUntil(p.expected) >= 0 && dayNum(p.expected) <= dayNum(weekEnd); });
+  var deliveredMonth = state.parcels.filter(function(p){ return isDelivered(p) && p.delivered && monthOf(p.delivered) === tm; });
+  var attn = state.parcels.filter(isAttention);
+  var spent = state.parcels.filter(function(p){ return monthOf(p.ordered) === tm; })
+    .reduce(function(s,p){ return s + (Number(p.price)||0); }, 0);
+  el('statsRow').innerHTML =
+    stat(transit.length, 'parcels in transit', '') +
+    stat(thisWeek.length, 'arriving this week', '') +
+    stat(deliveredMonth.length, 'delivered this month', 'good') +
+    stat(attn.length, attn.length === 1 ? 'parcel needs attention' : 'parcels need attention', attn.length ? 'warn' : '') +
+    stat(inr(spent), 'spent on parcels this month', '');
+  function stat(v, label, cls){ return '<div class="stat ' + cls + '"><b>' + v + '</b><span>' + label + '</span></div>'; }
+}
+
+function renderAttn(){
+  var attn = state.parcels.filter(isAttention).sort(function(a,b){ return dayNum(a.expected) - dayNum(b.expected); });
+  var box = el('attnBox');
+  if(!attn.length){ box.innerHTML = ''; return; }
+  var p = attn[0];
+  var more = attn.length > 1 ? ' And ' + (attn.length-1) + ' more.' : '';
+  box.innerHTML = '<div class="attn"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#b3402a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg></div>' +
+    '<div><h3>' + attn.length + (attn.length===1?' parcel needs':' parcels need') + ' attention</h3>' +
+    '<p><b>' + esc(p.item) + '</b> was due ' + fmtDate(p.expected) + ' and still shows “' + esc(STAGES[p.stage]) + '”. Give the courier a call with the tracking ID.' + esc(more) + '</p></div>' +
