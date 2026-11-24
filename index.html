@@ -703,3 +703,69 @@ function renderGuides(){
   if(box.dataset.done) return;
   box.dataset.done = '1';
   box.innerHTML = GUIDES.map(function(g, i){
+    return '<div class="guide"><button class="q" type="button" data-guide="' + i + '" aria-expanded="false"><span class="n">' + (i+1) + '</span>' + esc(g.t) + '<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button><div class="a">' + g.b + '</div></div>';
+  }).join('');
+}
+
+/* ================= actions ================= */
+var toastTimer = null;
+function toast(msg){
+  var t = el('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  if(toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 2600);
+}
+function copyText(txt, msg){
+  function done(){ toast(msg || 'Copied'); }
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(done, function(){ fallback(); });
+  } else { fallback(); }
+  function fallback(){
+    try{
+      var ta = document.createElement('textarea');
+      ta.value = txt; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); document.body.removeChild(ta); done();
+    }catch(e){ toast('Copy didn’t work — long-press the ID to copy it'); }
+  }
+}
+function scrollToEl(node){
+  if(!node) return;
+  try{ node.scrollIntoView({behavior:'smooth', block:'start'}); }catch(e){}
+}
+
+document.addEventListener('click', function(ev){
+  var t = ev.target.closest('[data-act]');
+  var g = ev.target.closest('[data-guide]');
+  if(g){
+    var card = g.closest('.guide');
+    var open = card.classList.toggle('open');
+    g.setAttribute('aria-expanded', open ? 'true' : 'false');
+    return;
+  }
+  var f = ev.target.closest('[data-filter]');
+  if(f){
+    filter = f.getAttribute('data-filter');
+    document.querySelectorAll('.fchip').forEach(function(ch){ ch.classList.toggle('on', ch === f); });
+    renderLists();
+    return;
+  }
+  if(!t) return;
+  var act = t.getAttribute('data-act');
+  if(act === 'scroll-add'){ scrollToEl(el('add')); var fi = el('fItem'); if(fi) fi.focus({preventScroll:true}); }
+  else if(act === 'copy'){ copyText(t.getAttribute('data-tid'), 'Tracking ID copied'); }
+  else if(act === 'advance'){
+    var p = state.parcels.find(function(x){ return x.id === t.getAttribute('data-id'); });
+    if(!p) return;
+    if(p.stage < 3){ p.stage += 1; toast('Moved to “' + STAGES[p.stage] + '”'); }
+    else { p.stage = 4; p.delivered = todayStr(); toast('Delivered — return window starts today'); }
+    render();
+  }
+  else if(act === 'delete'){
+    var id = t.getAttribute('data-id');
+    var p2 = state.parcels.find(function(x){ return x.id === id; });
+    state.parcels = state.parcels.filter(function(x){ return x.id !== id; });
+    if(p2 && p2.id && p2.item) toast('Removed “' + p2.item + '”');
+    render();
+  }
